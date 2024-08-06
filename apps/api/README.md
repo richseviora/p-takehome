@@ -32,6 +32,17 @@
 $ pnpm install
 ```
 
+## Configuring
+
+Create a `.env` file in the repository root with the following values:
+
+```
+OTEL_SERVICE_NAME=percipio-test
+OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=API_KEY_HERE
+```
+
 ## Running the app
 
 ```bash
