@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
+import { Follow } from './follow';
 
 @Entity()
 export class Show {
@@ -18,6 +20,9 @@ export class Show {
   @Column()
   @Index({ unique: true })
   imdb_id: string;
+
+  @OneToMany(() => Follow, (follow) => follow.user)
+  follows: Follow[];
 
   @CreateDateColumn({
     type: 'text',

@@ -1,23 +1,23 @@
 import {
-  Column,
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
 } from 'typeorm';
-import { Follow } from './follow';
+import { User } from './user';
+import { Show } from './show';
 
 @Entity()
-export class User {
+export class Follow {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', { length: 255 })
-  name: string;
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  user: User;
 
-  @OneToMany(() => Follow, (follow) => follow.user)
-  follows: Follow[];
+  @ManyToOne(() => Show, { onDelete: 'CASCADE' })
+  show: Show;
 
   @CreateDateColumn({
     type: 'text',
