@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import './tracing';
 import { User } from './entities/user';
+import { Show } from './entities/show';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { User } from './entities/user';
       database: 'local-dev.sql',
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: [User, Show],
       subscribers: [],
       migrations: [],
     }),
