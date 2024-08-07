@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from '../providers/users.service';
 
@@ -8,9 +8,11 @@ export class UsersController {
 
   @Get()
   findAll(@Res() res: Response) {
-    res.status(HttpStatus.OK).json([]);
+    res.status(HttpStatus.OK).json(this.usersService.findAll());
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {}
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
 }
