@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import './tracing';
+import { User } from './entities/user';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import './tracing';
       database: 'local-dev.sql',
       synchronize: true,
       logging: true,
-      entities: [],
+      entities: [User],
       subscribers: [],
       migrations: [],
     }),

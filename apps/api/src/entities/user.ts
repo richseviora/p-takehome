@@ -15,15 +15,15 @@ export class User {
   name: string;
 
   @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(4)',
+    type: 'text',
+    default: () => `strftime('%Y-%m-%dT%H:%M:%S', julianday())`,
   })
   created_at: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(4)',
-    onUpdate: 'CURRENT_TIMESTAMP(4)',
+    type: 'text',
+    default: () => `strftime('%Y-%m-%dT%H:%M:%S', julianday())`,
+    onUpdate: `strftime('%Y-%m-%dT%H:%M:%S', julianday())`,
   })
   updated_at: Date;
 }
