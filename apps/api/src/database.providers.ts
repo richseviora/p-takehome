@@ -9,7 +9,7 @@ export const databaseProviders = [
         database: 'local-dev.sql',
         synchronize: true,
         logging: true,
-        entities: [__dirname + '/**/entities{.ts,.js}'],
+        entities: [__dirname + '/**/entities/*{.ts,.js}'],
         subscribers: [],
         migrations: [],
       });
