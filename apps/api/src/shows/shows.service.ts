@@ -11,7 +11,7 @@ export class ShowsService {
   ) {}
 
   create(createShowDto: CreateShowDto) {
-    return this.showRepository.create(createShowDto);
+    return this.showRepository.save(createShowDto);
   }
 
   findAll() {

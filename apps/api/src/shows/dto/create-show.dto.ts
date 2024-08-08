@@ -1,1 +1,4 @@
-export class CreateShowDto {}
+export class CreateShowDto {
+  name: string;
+  imdb_id: string;
+}

@@ -8,11 +8,13 @@ import {
   Delete,
 } from '@nestjs/common';
 import {
+  CreateFollowDTO,
   CreateUserDTO,
   UpdateUserDTO,
   UsersService,
 } from '../providers/users.service';
 import { User } from '../entities/user';
+import { Follow } from '../entities/follow';
 
 @Controller('users')
 export class UsersController {
@@ -29,7 +31,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
@@ -41,5 +43,13 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.delete(id);
+  }
+
+  @Post(':id/follows')
+  createFollow(
+    @Param('id') id: string,
+    @Body() createFollowDto: CreateFollowDTO,
+  ): Promise<Follow> {
+    return this.usersService.createFollow(id, createFollowDto);
   }
 }
