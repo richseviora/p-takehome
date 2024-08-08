@@ -6,6 +6,10 @@ export class CreateUserDTO {
   name: string;
 }
 
+export class UpdateUserDTO {
+  name: string;
+}
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -22,5 +26,15 @@ export class UsersService {
 
   async create(userData: CreateUserDTO): Promise<User | null> {
     return this.userRepository.save(userData);
+  }
+
+  async update(id: string, data: UpdateUserDTO): Promise<User> {
+    await this.userRepository.update(id, data);
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async delete(id: string): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id });
+    await this.userRepository.remove(user);
   }
 }

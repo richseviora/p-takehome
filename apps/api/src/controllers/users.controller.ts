@@ -1,23 +1,31 @@
 import {
   Controller,
   Get,
-  Res,
-  HttpStatus,
   Param,
   Post,
   Body,
+  Patch,
+  Delete,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { CreateUserDTO, UsersService } from '../providers/users.service';
+import {
+  CreateUserDTO,
+  UpdateUserDTO,
+  UsersService,
+} from '../providers/users.service';
 import { User } from '../entities/user';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post()
+  create(@Body() createUserDto: CreateUserDTO): Promise<User> {
+    return this.usersService.create(createUserDto);
+  }
+
   @Get()
-  findAll(@Res() res: Response) {
-    res.status(HttpStatus.OK).json(this.usersService.findAll());
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Get(':id')
@@ -25,8 +33,13 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDTO): Promise<User> {
-    return this.usersService.create(createUserDto);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDTO) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.delete(id);
   }
 }
