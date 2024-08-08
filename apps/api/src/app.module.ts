@@ -8,6 +8,7 @@ import { UsersController } from './controllers/users.controller';
 import { UsersService } from './providers/users.service';
 import { DatabaseModule } from './database.module';
 import { usersProviders } from './providers/users.providers';
+import { ShowsModule } from './shows/shows.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { usersProviders } from './providers/users.providers';
       envFilePath: path.join(__dirname, '../../../.env'),
     }),
     DatabaseModule,
+    ShowsModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, ...usersProviders, UsersService],

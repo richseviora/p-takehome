@@ -14,6 +14,7 @@ importers:
       '@nestjs/common': ^10.0.0
       '@nestjs/config': ^3.2.3
       '@nestjs/core': ^10.0.0
+      '@nestjs/mapped-types': '*'
       '@nestjs/platform-express': ^10.0.0
       '@nestjs/schematics': ^10.0.0
       '@nestjs/testing': ^10.0.0
@@ -52,6 +53,7 @@ importers:
       '@nestjs/common': 10.3.10_0dfed9701e433cb4b0031e85f3637c5a
       '@nestjs/config': 3.2.3_2104f0a57e16f90633c5457340a5209b
       '@nestjs/core': 10.3.10_91f3555994cfd9b537d8930c16af0321
+      '@nestjs/mapped-types': 2.0.5_75d6d67a80382e1e97d0790e264a1a6f
       '@nestjs/platform-express': 10.3.10_79e517b907f1a328f8d4f3fd4ae2df2a
       '@nestjs/typeorm': 10.0.2_d1f550840028a34665cf9c98e6cd312b
       '@opentelemetry/api': 1.9.0
@@ -1190,6 +1192,23 @@ packages:
       uid: 2.0.2
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@nestjs/mapped-types/2.0.5_75d6d67a80382e1e97d0790e264a1a6f:
+    resolution: {integrity: sha512-bSJv4pd6EY99NX9CjBIyn4TVDoSit82DUZlL4I3bqNfy5Gt+gXTa86i3I/i0iIV9P4hntcGM5GyO+FhZAhxtyg==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      class-transformer: ^0.4.0 || ^0.5.0
+      class-validator: ^0.13.0 || ^0.14.0
+      reflect-metadata: ^0.1.12 || ^0.2.0
+    peerDependenciesMeta:
+      class-transformer:
+        optional: true
+      class-validator:
+        optional: true
+    dependencies:
+      '@nestjs/common': 10.3.10_0dfed9701e433cb4b0031e85f3637c5a
+      reflect-metadata: 0.2.2
     dev: false
 
   /@nestjs/platform-express/10.3.10_79e517b907f1a328f8d4f3fd4ae2df2a:
