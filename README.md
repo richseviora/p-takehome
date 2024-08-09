@@ -69,7 +69,7 @@ pnpm i
 You can use `nx`, either from a global install or with `pnpx`, to run workspace scripts from each workspace. There are more details on [their website](https://nx.dev/nx-api/nx) but for some quick examples:
 
 - `pnpx nx run api:start:dev` is going to `run` a package.json script in the `api` workspace, and the script is `start:dev`
-- `pnpx nx run-many -t start:dev -p api web` is going to concurrently run the `start:dev` scripts in both `api` and `web` workspaces
+- `pnpx nx run-many -t start:dev -p api web --output-style stream` is going to concurrently run the `start:dev` scripts in both `api` and `web` workspaces
 
 # Other Scripts
 
