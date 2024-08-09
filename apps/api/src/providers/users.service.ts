@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../entities/user';
 import { Repository } from 'typeorm';
 import { Follow } from '../entities/follow';
+import { SseService } from '../sse/sse.service';
 
 export class CreateUserDTO {
   name: string;
@@ -21,6 +22,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY') private userRepository: Repository<User>,
     @Inject('FOLLOW_REPOSITORY') private followRepository: Repository<Follow>,
+    private sseService: SseService,
   ) {}
 
   findAll(): Promise<User[]> {
@@ -41,7 +43,9 @@ export class UsersService {
   }
 
   async create(userData: CreateUserDTO): Promise<User | null> {
-    return this.userRepository.save(userData);
+    const result = await this.userRepository.save(userData);
+    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    return result;
   }
 
   async update(id: string, data: UpdateUserDTO): Promise<User> {

@@ -1,5 +1,5 @@
 import { map, Observable, Subject } from 'rxjs';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 export interface ISseService {
   emitEvent(id: string, data: EventData): void;
@@ -15,15 +15,17 @@ export interface EventData {
   data: string;
 }
 
+const realId = 'user';
+
 @Injectable()
 export class SseService implements ISseService {
   private eventSubjects: Map<string, Subject<EventData>> = new Map();
 
   emitEvent(id: string, data: EventData) {
-    let eventSubject = this.eventSubjects.get(id);
+    let eventSubject = this.eventSubjects.get(realId);
     if (!eventSubject) {
       eventSubject = new Subject<EventData>();
-      this.eventSubjects.set(id, eventSubject);
+      this.eventSubjects.set(realId, eventSubject);
     }
     eventSubject.next(data);
   }
@@ -43,10 +45,12 @@ export class SseService implements ISseService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- temp usage
   getObservable(eventId: string): Observable<EventData> {
-    const eventSubject = this.eventSubjects.get(eventId);
+    let eventSubject = this.eventSubjects.get(realId);
     if (!eventSubject) {
-      throw new NotFoundException(`Event stream with ID ${eventId} not found`);
+      eventSubject = new Subject<EventData>();
+      this.eventSubjects.set(realId, eventSubject);
     }
     return eventSubject.asObservable().pipe(map((data) => data));
   }

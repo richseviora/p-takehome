@@ -3,15 +3,19 @@ import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import { Repository } from 'typeorm';
 import { Show } from '../entities/show';
+import { SseService } from '../sse/sse.service';
 
 @Injectable()
 export class ShowsService {
   constructor(
     @Inject('SHOW_REPOSITORY') private showRepository: Repository<Show>,
+    private sseService: SseService,
   ) {}
 
-  create(createShowDto: CreateShowDto) {
-    return this.showRepository.save(createShowDto);
+  async create(createShowDto: CreateShowDto) {
+    const result = await this.showRepository.save(createShowDto);
+    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    return result;
   }
 
   findAll() {
