@@ -1,20 +1,30 @@
 import React from 'react';
 import './App.css';
-import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Drawer, styled, Toolbar, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@mui/icons-material';
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
 
 function App() {
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
-    console.log("I'm clicked");
+    console.log('I\'m clicked');
     setOpen(true);
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  console.log("rendering");
+  console.log('rendering');
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position="fixed" open={open} component="div">
@@ -27,14 +37,22 @@ function App() {
             sx={{
               marginRight: 5,
               ...(open && { display: 'none' }),
-            }}></IconButton>
+            }}>
           <MenuIcon />
+          </IconButton>
           <Typography variant="h6" noWrap component="div">Meow</Typography>
         </Toolbar>
-
       </AppBar>
+      <Drawer open={open} onClose={handleDrawerClose}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </DrawerHeader>
+      </Drawer>
     </Box>
-  );
+  )
+    ;
 }
 
 export default App;
