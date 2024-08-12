@@ -99,6 +99,7 @@ importers:
       '@mui/icons-material': ^5.16.7
       '@mui/material': ^5.16.7
       '@tanstack/react-query': ^5.51.23
+      '@tanstack/react-query-devtools': ^5.51.23
       '@types/react': ^18.2.66
       '@types/react-dom': ^18.2.22
       '@typescript-eslint/eslint-plugin': ^7.2.0
@@ -118,6 +119,7 @@ importers:
       '@mui/icons-material': 5.16.7_9f78b0ae82f4c155eafa3cf9bf5a0295
       '@mui/material': 5.16.7_8defc28f66d07bcdad6693cf204cde20
       '@tanstack/react-query': 5.51.23_react@18.3.1
+      '@tanstack/react-query-devtools': 5.51.23_3ea0a9731cdf0d017622f38b5ae54713
       react: 18.3.1
       react-dom: 18.3.1_react@18.3.1
     devDependencies:
@@ -2969,6 +2971,21 @@ packages:
 
   /@tanstack/query-core/5.51.21:
     resolution: {integrity: sha512-POQxm42IUp6n89kKWF4IZi18v3fxQWFRolvBA6phNVmA8psdfB1MvDnGacCJdS+EOX12w/CyHM62z//rHmYmvw==}
+    dev: false
+
+  /@tanstack/query-devtools/5.51.16:
+    resolution: {integrity: sha512-ajwuq4WnkNCMj/Hy3KR8d3RtZ6PSKc1dD2vs2T408MdjgKzQ3klVoL6zDgVO7X+5jlb5zfgcO3thh4ojPhfIaw==}
+    dev: false
+
+  /@tanstack/react-query-devtools/5.51.23_3ea0a9731cdf0d017622f38b5ae54713:
+    resolution: {integrity: sha512-XpHrdyfUPGULIyJ1K7UvhAcK+KjMJdw4NjmRjryoj3XEgfAU5qU1rz8gIFvGc3gTGT07yIseGo7GEll/ICfJfQ==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.51.23
+      react: ^18 || ^19
+    dependencies:
+      '@tanstack/query-devtools': 5.51.16
+      '@tanstack/react-query': 5.51.23_react@18.3.1
+      react: 18.3.1
     dev: false
 
   /@tanstack/react-query/5.51.23_react@18.3.1:

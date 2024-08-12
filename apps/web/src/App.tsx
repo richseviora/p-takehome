@@ -13,7 +13,11 @@ import {
   Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { Menu as MenuIcon, Inbox } from '@mui/icons-material';
+import { Menu as MenuIcon, Inbox, Error, Watch } from '@mui/icons-material';
+import { useQuery, QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
+import { UserList } from './UserList.tsx';
+
+
 
 const customTheme = createTheme({
   palette: {
@@ -42,6 +46,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+const queryClient = new QueryClient();
 
 function FullDrawer(props: { open: boolean, onClose: () => void, onOpen: () => void }) {
   const { open, onClose } = props;
@@ -76,9 +81,32 @@ function FullDrawer(props: { open: boolean, onClose: () => void, onOpen: () => v
   </Drawer>;
 }
 
+function Page(props: { open: boolean, onClick: () => void, onClose: () => void }) {
+
+  return <Box sx={{ display: 'flex' }}>
+    <AppBar position="fixed" open={props.open} component="div">
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={props.onClick}
+          edge="start"
+          sx={{
+            marginRight: 5,
+            ...(props.open && { display: 'none' }),
+          }}>
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" noWrap component="div">Meow</Typography>
+      </Toolbar>
+    </AppBar>
+    <FullDrawer open={props.open} onClose={props.onClose} onOpen={props.onClick} />
+    <UserList />
+  </Box>;
+}
+
 function App() {
   const [open, setOpen] = React.useState(false);
-
   const handleDrawerOpen = () => {
     console.log('I\'m clicked');
     setOpen(true);
@@ -89,25 +117,9 @@ function App() {
   };
   return (
     <ThemeProvider theme={customTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <AppBar position="fixed" open={open} component="div">
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: 'none' }),
-              }}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">Meow</Typography>
-          </Toolbar>
-        </AppBar>
-        <FullDrawer open={open} onClose={handleDrawerClose} onOpen={handleDrawerOpen} />
-      </Box>
+      <QueryClientProvider client={queryClient}>
+        <Page open={open} onClick={handleDrawerOpen} onClose={handleDrawerClose} />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 
