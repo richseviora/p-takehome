@@ -13,8 +13,8 @@ import {
   Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { Menu as MenuIcon, Inbox, Error, Watch } from '@mui/icons-material';
-import { useQuery, QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
+import { Menu as MenuIcon, Inbox } from '@mui/icons-material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserList } from './UserList.tsx';
 
 
@@ -50,7 +50,7 @@ const queryClient = new QueryClient();
 
 function FullDrawer(props: { open: boolean, onClose: () => void, onOpen: () => void }) {
   const { open, onClose } = props;
-  return <Drawer open={props.open} onClose={props.onClose} variant="permanent">
+  return <Drawer open={open} onClose={onClose} variant="permanent">
     <DrawerHeader>
     </DrawerHeader>
     <List>
