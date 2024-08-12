@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Error, Watch } from '@mui/icons-material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { User } from './UserType.ts';
+import { useState } from 'react';
+import { UserDetail } from './UserDetail.tsx';
 
 const getUsers = async () => {
   console.log('loading');
@@ -11,6 +13,7 @@ const getUsers = async () => {
 };
 
 export function UserList() {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const query = useQuery<Response, unknown, User[]>({ queryKey: ['users'], queryFn: getUsers });
   if (query.isError) {
     return <Error />;
@@ -20,6 +23,7 @@ export function UserList() {
   }
   const rows = query.data;
   return (<TableContainer>
+    {selectedUser && (<UserDetail open={true} onClose={() => setSelectedUser(null)} user={selectedUser} />)}
     <Table>
       <TableHead>
         <TableRow>
@@ -32,7 +36,11 @@ export function UserList() {
         {
           rows.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.name}</TableCell>
+              <TableCell>
+                <Link onClick={() => setSelectedUser(row)}>
+                  {row.name}
+                </Link>
+              </TableCell>
               <TableCell>{row.id}</TableCell>
               <TableCell>{row.updated_at}</TableCell>
             </TableRow>

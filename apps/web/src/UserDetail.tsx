@@ -1,7 +1,16 @@
-import { Box, List, ListItem, ListItemText, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { User } from './UserType.ts';
-import { Error, Watch } from '@mui/icons-material';
+import { Error as ErrorIcon, Watch } from '@mui/icons-material';
 
 interface Follow {
   id: string;
@@ -25,7 +34,7 @@ const getUserDetail = async (id: string) => {
   console.log('loading');
   const response = await fetch('http://localhost:3000/users/' + id);
   if (!response.ok) {
-    throw new Error();
+    throw new Error(response.statusText);
   }
   console.log('loaded', { response });
   return response.json();
@@ -39,27 +48,32 @@ export function UserDetail(props: { open: boolean, onClose: () => void, user: Us
     queryFn: () => getUserDetail(props.user.id),
   });
   if (query.isError) {
-    return (<Error />);
+    return (<ErrorIcon />);
   }
   if (query.isPending) {
     return (<Watch />);
   }
   const userDetail = query.data;
   return (
-    <Modal open={props.open} onClose={props.onClose}>
+    <Dialog open={props.open} onClose={props.onClose} maxWidth="lg">
       <Box>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+        <DialogTitle id="modal-modal-title" variant="h2" component="h2">
           {userDetail.name}
-        </Typography>
-        <List>
-          {userDetail.__follows__.map(follow => (
-            <ListItem>
-              <ListItemText>{follow.show.name}</ListItemText>
-            </ListItem>
-          ))}
-        </List>
+        </DialogTitle>
+        <DialogContent>
+          <Typography id="modal-modal-title" variant="h4" component="h2">
+            Shows Followed
+          </Typography>
+          <List>
+            {userDetail.__follows__.map(follow => (
+              <ListItem>
+                <ListItemText>{follow.show.name}</ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
       </Box>
-    </Modal>
+    </Dialog>
 
   );
 }
