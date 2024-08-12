@@ -1,12 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Error, Watch } from '@mui/icons-material';
-import { Table, TableBody, TableCell, TableRow, TableHead, TableContainer } from '@mui/material';
-
-interface User {
-  name: string;
-  id: string;
-  updated_at: string;
-}
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { User } from './UserType.ts';
 
 const getUsers = async () => {
   console.log('loading');
