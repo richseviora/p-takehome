@@ -65,7 +65,11 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ id: userId });
     const follow = new Follow();
     follow.user = user;
+    // Not a huge fan of this approach but it seems to work, and having to load the show repository just to load
+    // the show object so I can persist it seemed a bit silly.
     follow.show = { id: followDTO.show_id } as any;
-    return this.followRepository.save(follow);
+    const result = await this.followRepository.save(follow);
+    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    return result;
   }
 }

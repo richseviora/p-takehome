@@ -2,6 +2,25 @@
 
 A monorepo template to use for our full-stack test.
 
+
+## RICH HAS THOUGHTS - READ HERE
+
+There's a number of things I would do differently in a production scale application, and/or would've done here:
+
+- API
+  - This is my first time working with NestJS so I didn't take advantage of all the automated generators. Would move the users controller into a users/ folder and modularize the users providers/service.
+  - The official documentation doesn't seem to have a great way to structure large applications.
+  - Establish contracts for all the message types outside of the app root, perhaps in a shared/contracts folder and/or use OpenAPI specifications for both contract documentation and message validation.
+  - Add the missing CRUD endpoints for 
+  - Use the EventEmitter API instead of the SSE service I built.
+  - More, useful tests!
+- UI
+  - Icons and more UI pizazzz.
+  - UI tests!
+  - Separate API layer from UI (though all that means I guess is moving the fetch function call out).
+  - Better configuration
+  - i18n
+
 ## Expectations
 
 As the name implies this is meant to be a full-stack test, but no full-stack engineer

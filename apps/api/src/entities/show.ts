@@ -22,7 +22,7 @@ export class Show {
   imdb_id: string;
 
   @OneToMany(() => Follow, (follow) => follow.user)
-  follows: Follow[];
+  follows: Promise<Follow[]>;
 
   @CreateDateColumn({
     type: 'text',
