@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Error, Watch } from '@mui/icons-material';
-import { Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, CardContent } from '@mui/material';
 import { User } from './UserType.ts';
 import { useState } from 'react';
 import { UserDetail } from './UserDetail.tsx';
@@ -22,31 +22,35 @@ export function UserList() {
     return <Watch />;
   }
   const rows = query.data;
-  return (<TableContainer>
-    {selectedUser && (<UserDetail open={true} onClose={() => setSelectedUser(null)} user={selectedUser} />)}
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>ID</TableCell>
-          <TableCell>Last Updated At</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {
-          rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>
-                <Link onClick={() => setSelectedUser(row)}>
-                  {row.name}
-                </Link>
-              </TableCell>
-              <TableCell>{row.id}</TableCell>
-              <TableCell>{row.updated_at}</TableCell>
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  </TableContainer>);
+  return (
+    <Card sx={{ background: 'linear-gradient(to bottom, #F3F5FB, white)' }}>
+      <CardContent>
+        <TableContainer>
+          {selectedUser && (<UserDetail open={true} onClose={() => setSelectedUser(null)} user={selectedUser} />)}
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Last Updated At</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
+                rows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      <Link onClick={() => setSelectedUser(row)}>
+                        {row.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>{row.updated_at}</TableCell>
+                  </TableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent></Card>);
 }

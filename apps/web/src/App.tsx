@@ -1,8 +1,7 @@
 import React from 'react';
-import './App.css';
 import {
   AppBar,
-  Box, createTheme,
+  Box, Container, createTheme,
   Drawer,
   List,
   ListItem,
@@ -19,6 +18,15 @@ import { UserList } from './UserList.tsx';
 import { Notifier } from './Notifier.tsx';
 
 
+// Colour Notes
+/**
+ * Sidebar ends at 4C09C3, starts at 4C02C2
+ * Main background top at F3F3F3 ends at F1F3F6
+ * Focus element starts at F6F6FC
+ * Top Bar is F6F6FC
+ *
+ */
+
 
 const customTheme = createTheme({
   palette: {
@@ -27,6 +35,12 @@ const customTheme = createTheme({
     },
   },
   components: {
+    MuiAppBar: {
+      styleOverrides:
+        {
+          colorDefault: '#F6F6C6',
+        },
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
@@ -82,10 +96,16 @@ function FullDrawer(props: { open: boolean, onClose: () => void, onOpen: () => v
   </Drawer>;
 }
 
+function UserPage() {
+  return <Box component="div">
+    <Typography variant="h3">Users</Typography>
+    <UserList /></Box>;
+}
+
 function Page(props: { open: boolean, onClick: () => void, onClose: () => void }) {
 
-  return <Box sx={{ display: 'flex' }}>
-    <AppBar position="fixed" component="div">
+  return <Container>
+    <AppBar position="fixed" component="div" color="default">
       <Toolbar>
         <IconButton
           color="inherit"
@@ -102,9 +122,9 @@ function Page(props: { open: boolean, onClick: () => void, onClose: () => void }
       </Toolbar>
     </AppBar>
     <FullDrawer open={props.open} onClose={props.onClose} onOpen={props.onClick} />
-    <UserList />
-    <Notifier/>
-  </Box>;
+    <UserPage />
+    <Notifier />
+  </Container>;
 }
 
 function App() {
