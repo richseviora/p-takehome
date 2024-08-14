@@ -85,7 +85,7 @@ function FullDrawer(props: { open: boolean, onClose: () => void, onOpen: () => v
 function Page(props: { open: boolean, onClick: () => void, onClose: () => void }) {
 
   return <Box sx={{ display: 'flex' }}>
-    <AppBar position="fixed" open={props.open} component="div">
+    <AppBar position="fixed" component="div">
       <Toolbar>
         <IconButton
           color="inherit"

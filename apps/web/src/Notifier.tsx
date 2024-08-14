@@ -1,14 +1,16 @@
 import { useEffect, useReducer, Fragment } from 'react';
 import { Snackbar } from '@mui/material';
 
-interface Message {
-  id: string;
-  message: string;
-}
 
 type ReducerAction = { id: string, message: string, type: 'add' } | { id: string, type: 'remove' };
 
-function messageReducer(state: Record<string, any>, action: ReducerAction): Record<string, any> {
+interface SseType {
+  id: string;
+  name: string;
+  created_at: string;
+}
+
+function messageReducer(state: Record<string, string>, action: ReducerAction): Record<string, string> {
   switch (action.type) {
     case 'add':
       return { ...state, [action.id]: action.message };
@@ -33,7 +35,7 @@ export function Notifier() {
   useEffect(() => {
     const sse = new EventSource('http://localhost:3000/sse');
 
-    function getRealtimeData(data: any) {
+    function getRealtimeData(data: SseType) {
       dispatch({ id: data.id, message: 'Added:' + data.name, type: 'add' });
     }
 
