@@ -40,6 +40,18 @@ const getUserDetail = async (id: string) => {
   return response.json();
 };
 
+function UserDetailModal(props: { name: string, open: boolean, onClose: () => void, children: React.ReactNode }) {
+  return <Dialog open={props.open} onClose={props.onClose} maxWidth="lg">
+    <Box>
+      <DialogTitle id="modal-modal-title" variant="h2" component="h2">
+        {props.name}
+      </DialogTitle>
+      <DialogContent>
+        {props.children}
+      </DialogContent>
+    </Box>
+  </Dialog>;
+}
 
 export function UserDetail(props: { open: boolean, onClose: () => void, user: User }) {
 
@@ -48,32 +60,33 @@ export function UserDetail(props: { open: boolean, onClose: () => void, user: Us
     queryFn: () => getUserDetail(props.user.id),
   });
   if (query.isError) {
-    return (<ErrorIcon />);
+    return (
+      <UserDetailModal open={props.open} onClose={props.onClose} name="Error">
+        <ErrorIcon />
+      </UserDetailModal>
+    );
   }
   if (query.isPending) {
-    return (<Watch />);
+    return (
+      <UserDetailModal open={props.open} onClose={props.onClose} name="Loading">
+        <Watch />
+      </UserDetailModal>
+    );
   }
   const userDetail = query.data;
   return (
-    <Dialog open={props.open} onClose={props.onClose} maxWidth="lg">
-      <Box>
-        <DialogTitle id="modal-modal-title" variant="h2" component="h2">
-          {userDetail.name}
-        </DialogTitle>
-        <DialogContent>
-          <Typography id="modal-modal-title" variant="h4" component="h2">
-            Shows Followed
-          </Typography>
-          <List>
-            {userDetail.__follows__.map(follow => (
-              <ListItem>
-                <ListItemText>{follow.show.name}</ListItemText>
-              </ListItem>
-            ))}
-          </List>
-        </DialogContent>
-      </Box>
-    </Dialog>
+    <UserDetailModal open={props.open} onClose={props.onClose} name={userDetail.name}>
+      <Typography id="modal-modal-title" variant="h4" component="h2">
+        Shows Followed
+      </Typography>
+      <List>
+        {userDetail.__follows__.map(follow => (
+          <ListItem>
+            <ListItemText>{follow.show.name}</ListItemText>
+          </ListItem>
+        ))}
+      </List>
+    </UserDetailModal>
 
   );
 }
