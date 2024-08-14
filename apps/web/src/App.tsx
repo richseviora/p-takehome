@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import { Menu as MenuIcon, Inbox } from '@mui/icons-material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UserList } from './UserList.tsx';
+import { Notifier } from './Notifier.tsx';
 
 
 
@@ -102,6 +103,7 @@ function Page(props: { open: boolean, onClick: () => void, onClose: () => void }
     </AppBar>
     <FullDrawer open={props.open} onClose={props.onClose} onOpen={props.onClick} />
     <UserList />
+    <Notifier/>
   </Box>;
 }
 
