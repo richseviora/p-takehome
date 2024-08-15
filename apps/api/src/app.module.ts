@@ -4,10 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import './tracing';
-import { UsersController } from './controllers/users.controller';
-import { UsersService } from './providers/users.service';
+import { UsersController } from './users/users.controller';
+import { UsersService } from './users/users.service';
 import { DatabaseModule } from './database.module';
-import { usersProviders } from './providers/users.providers';
+import { usersProviders } from './users/users.providers';
 import { ShowsModule } from './shows/shows.module';
 import { SseModule } from './sse/sse.module';
 

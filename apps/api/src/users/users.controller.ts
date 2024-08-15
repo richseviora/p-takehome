@@ -12,7 +12,7 @@ import {
   CreateUserDTO,
   UpdateUserDTO,
   UsersService,
-} from '../providers/users.service';
+} from './users.service';
 import { User } from '../entities/user';
 import { Follow } from '../entities/follow';
 
