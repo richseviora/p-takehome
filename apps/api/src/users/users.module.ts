@@ -10,4 +10,4 @@ import { SseModule } from '../sse/sse.module';
   controllers: [UsersController],
   providers: [...usersProviders, UsersService],
 })
-export class ShowsModule {}
+export class UsersModule {}

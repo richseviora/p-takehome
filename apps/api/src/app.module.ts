@@ -10,6 +10,7 @@ import { DatabaseModule } from './database.module';
 import { usersProviders } from './users/users.providers';
 import { ShowsModule } from './shows/shows.module';
 import { SseModule } from './sse/sse.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SseModule } from './sse/sse.module';
     DatabaseModule,
     SseModule,
     ShowsModule,
+    UsersModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, ...usersProviders, UsersService],
