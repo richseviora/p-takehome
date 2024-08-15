@@ -2,24 +2,26 @@ import { map, Observable, Subject } from 'rxjs';
 import { Injectable } from '@nestjs/common';
 
 export interface ISseService {
-  emitEvent(id: string, data: EventData): void;
+  emitEvent(data: EventData): void;
 
-  getObservable(id: string): Observable<EventData>;
+  getObservable(): Observable<string>;
 }
 
 export interface EventData {
-  data: string;
+  data: unknown;
+  type: 'show' | 'follow' | 'user';
+  action: 'add';
 }
 
 @Injectable()
 export class SseService implements ISseService {
-  private eventSubject: Subject<EventData> = new Subject<EventData>();
+  private eventSubject: Subject<string> = new Subject<string>();
 
-  emitEvent(id: string, data: EventData) {
-    this.eventSubject.next(data);
+  emitEvent(data: EventData) {
+    this.eventSubject.next(JSON.stringify(data));
   }
 
-  getObservable(): Observable<EventData> {
+  getObservable(): Observable<string> {
     return this.eventSubject.asObservable().pipe(map((data) => data));
   }
 }

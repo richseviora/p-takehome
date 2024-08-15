@@ -5,9 +5,13 @@ import { Snackbar } from '@mui/material';
 type ReducerAction = { id: string, message: string, type: 'add' } | { id: string, type: 'remove' };
 
 interface SseType {
-  id: string;
-  name: string;
-  created_at: string;
+  type: string;
+  action: string;
+  data: {
+    id: string;
+    name: string;
+    created_at: string;
+  }
 }
 
 function messageReducer(state: Record<string, string>, action: ReducerAction): Record<string, string> {
@@ -36,7 +40,8 @@ export function Notifier() {
     const sse = new EventSource('http://localhost:3000/sse');
 
     function getRealtimeData(data: SseType) {
-      dispatch({ id: data.id, message: 'Added:' + data.name, type: 'add' });
+      console.log(data);
+      dispatch({ id: data.data.id, message: 'Added:' + data.data.name, type: 'add' });
     }
 
     sse.onmessage = e => getRealtimeData(JSON.parse(e.data));

@@ -14,7 +14,11 @@ export class ShowsService {
 
   async create(createShowDto: CreateShowDto) {
     const result = await this.showRepository.save(createShowDto);
-    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    this.sseService.emitEvent({
+      data: result,
+      action: 'add',
+      type: 'show',
+    });
     return result;
   }
 

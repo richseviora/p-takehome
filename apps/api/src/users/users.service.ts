@@ -44,7 +44,11 @@ export class UsersService {
 
   async create(userData: CreateUserDTO): Promise<User | null> {
     const result = await this.userRepository.save(userData);
-    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    this.sseService.emitEvent({
+      data: result,
+      action: 'add',
+      type: 'user',
+    });
     return result;
   }
 
@@ -69,7 +73,11 @@ export class UsersService {
     // the show object so I can persist it seemed a bit silly.
     follow.show = { id: followDTO.show_id } as any;
     const result = await this.followRepository.save(follow);
-    this.sseService.emitEvent('bob', { data: JSON.stringify(result) });
+    this.sseService.emitEvent({
+      data: result,
+      type: 'follow',
+      action: 'add',
+    });
     return result;
   }
 }
