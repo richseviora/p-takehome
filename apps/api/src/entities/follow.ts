@@ -8,6 +8,12 @@ import {
 import { User } from './user';
 import { Show } from './show';
 
+/**
+ * You might wonder why this is its own entity. IME, many-to-many relationships inevitably end up existing as their own
+ * separate concept that has things like lifecycles and states attached to it.
+ *
+ *
+ */
 @Entity()
 export class Follow {
   @PrimaryGeneratedColumn('uuid')
