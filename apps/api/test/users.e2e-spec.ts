@@ -158,5 +158,20 @@ describe('UsersController (e2e)', () => {
           });
         });
     });
+    it('returns 404 when the show ID is not valid', async () => {
+      const show = await showsService.create({
+        name: faker.company.name(),
+        imdb_id: faker.string.uuid(),
+      });
+      const user = await usersService.create({ name: faker.person.fullName() });
+      await request(app.getHttpServer())
+        .post(`/users/${user.id}/follows`)
+        .send({
+          show_id: 'abcd1234wrongID',
+        })
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
   });
 });
