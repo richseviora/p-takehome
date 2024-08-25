@@ -9,7 +9,7 @@ export const databaseProviders = [
         database:
           process.env.NODE_ENV === 'test'
             ? // Inserting the process ID prevents DB contention between different tests.
-              `local-test-${process.pid}.sql`
+              `./tmp/local-test-${process.pid}.sql`
             : 'local-dev.sql',
         synchronize: true,
         logging: true,

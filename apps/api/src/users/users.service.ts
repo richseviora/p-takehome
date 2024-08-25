@@ -1,6 +1,12 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { User } from '../entities/user';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Follow } from '../entities/follow';
 import { SseService } from '../sse/sse.service';
 
@@ -73,7 +79,7 @@ export class UsersService {
     followDTO: CreateFollowDTO,
   ): Promise<Follow> {
     const user = await this.userRepository.findOneBy({ id: userId });
-    if (user != null) {
+    if (user == null) {
       throw new NotFoundException('User not found');
     }
     const follow = new Follow();
@@ -81,12 +87,18 @@ export class UsersService {
     // Not a huge fan of this approach but it seems to work, and having to load the show repository just to load
     // the show object so I can persist it seemed a bit silly.
     follow.show = { id: followDTO.show_id } as any;
-    const result = await this.followRepository.save(follow);
-    this.sseService.emitEvent({
-      data: result,
-      type: 'follow',
-      action: 'add',
-    });
-    return result;
+    try {
+      const result = await this.followRepository.save(follow);
+      this.sseService.emitEvent({
+        data: result,
+        type: 'follow',
+        action: 'add',
+      });
+      return result;
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        throw new UnprocessableEntityException();
+      }
+    }
   }
 }

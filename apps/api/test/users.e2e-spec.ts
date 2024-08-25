@@ -151,10 +151,10 @@ describe('UsersController (e2e)', () => {
           show_id: show.id,
         })
         .expect((response) => {
-          expect(response.status).toBe(200);
+          expect(response.status).toBe(201);
           expect(response.body).toMatchObject({
-            show_id: show.id,
-            user_id: user.id,
+            show: { id: show.id },
+            user: { id: user.id },
           });
         });
     });
@@ -170,7 +170,7 @@ describe('UsersController (e2e)', () => {
           show_id: 'abcd1234wrongID',
         })
         .expect((response) => {
-          expect(response.status).toBe(404);
+          expect(response.status).toBe(422);
         });
     });
   });
