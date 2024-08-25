@@ -15,7 +15,6 @@ describe('ShowsController', () => {
     };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ShowsController],
-      providers: [ShowsService],
     })
       .useMocker((token) => {
         if (token === 'SHOW_REPOSITORY') {

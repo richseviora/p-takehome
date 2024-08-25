@@ -6,7 +6,11 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'sqlite',
-        database: 'local-dev.sql',
+        database:
+          process.env.NODE_ENV === 'test'
+            ? // Inserting the process ID prevents DB contention between different tests.
+              `local-test-${process.pid}.sql`
+            : 'local-dev.sql',
         synchronize: true,
         logging: true,
         entities: [__dirname + '/**/entities/*{.ts,.js}'],

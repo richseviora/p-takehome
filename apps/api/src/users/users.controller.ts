@@ -6,6 +6,8 @@ import {
   Body,
   Patch,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   CreateFollowDTO,
@@ -15,14 +17,25 @@ import {
 } from './users.service';
 import { User } from '../entities/user';
 import { Follow } from '../entities/follow';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDTO): Promise<User> {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDTO): Promise<User> {
+    try {
+      return await this.usersService.create(createUserDto);
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        throw new HttpException(
+          'Invalid record error',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+      throw e;
+    }
   }
 
   @Get()
@@ -32,7 +45,11 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    const result = await this.usersService.findOne(id);
+    if (result == null) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return result;
   }
 
   @Patch(':id')

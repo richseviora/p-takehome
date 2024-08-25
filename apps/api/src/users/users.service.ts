@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../entities/user';
 import { Repository } from 'typeorm';
 import { Follow } from '../entities/follow';
@@ -53,12 +53,18 @@ export class UsersService {
   }
 
   async update(id: string, data: UpdateUserDTO): Promise<User> {
-    await this.userRepository.update(id, data);
+    const result = await this.userRepository.update(id, data);
+    if (result.affected == null) {
+      throw new NotFoundException('User not found');
+    }
     return this.userRepository.findOneBy({ id });
   }
 
   async delete(id: string): Promise<void> {
     const user = await this.userRepository.findOneBy({ id });
+    if (user == null) {
+      throw new NotFoundException('User not found');
+    }
     await this.userRepository.remove(user);
   }
 
@@ -67,6 +73,9 @@ export class UsersService {
     followDTO: CreateFollowDTO,
   ): Promise<Follow> {
     const user = await this.userRepository.findOneBy({ id: userId });
+    if (user != null) {
+      throw new NotFoundException('User not found');
+    }
     const follow = new Follow();
     follow.user = user;
     // Not a huge fan of this approach but it seems to work, and having to load the show repository just to load
