@@ -54,7 +54,7 @@ export class UsersService {
 
   async update(id: string, data: UpdateUserDTO): Promise<User> {
     const result = await this.userRepository.update(id, data);
-    if (result.affected == null) {
+    if (result.affected == null || result.affected === 0) {
       throw new NotFoundException('User not found');
     }
     return this.userRepository.findOneBy({ id });

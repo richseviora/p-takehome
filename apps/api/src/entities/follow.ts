@@ -19,10 +19,10 @@ export class Follow {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   user: User;
 
-  @ManyToOne(() => Show, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Show, { onDelete: 'CASCADE', nullable: false })
   show: Show;
 
   @CreateDateColumn({

@@ -5,10 +5,15 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UsersService } from '../src/users/users.service';
 import { SseService } from '../src/sse/sse.service';
+import { DataSource, Repository } from 'typeorm';
+import { User } from '../src/entities/user';
+import { ShowsService } from '../src/shows/shows.service';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
-  let userRepo: UsersService;
+  let usersService: UsersService;
+  let userDb: Repository<User>;
+  let showsService: ShowsService;
   let sseService: SseService;
 
   beforeEach(async () => {
@@ -17,10 +22,13 @@ describe('UsersController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    userRepo = moduleFixture.get(UsersService);
+    userDb = moduleFixture.get('USER_REPOSITORY');
+    usersService = moduleFixture.get(UsersService);
+    showsService = moduleFixture.get(ShowsService);
     sseService = moduleFixture.get(SseService);
 
     await app.init();
+    await userDb.delete({});
   });
 
   describe('/users (GET)', () => {
@@ -33,7 +41,7 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the user data when populated', async () => {
-      const user = await userRepo.create({ name: faker.person.fullName() });
+      const user = await usersService.create({ name: faker.person.fullName() });
       await request(app.getHttpServer())
         .get('/users')
         .expect((response) => {
@@ -57,7 +65,7 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the user data when populated', async () => {
-      const user = await userRepo.create({ name: faker.person.fullName() });
+      const user = await usersService.create({ name: faker.person.fullName() });
       await request(app.getHttpServer())
         .get('/users/' + user.id)
         .expect((response) => {
@@ -92,6 +100,62 @@ describe('UsersController (e2e)', () => {
         .send({})
         .expect((response) => {
           expect(response.status).toBe(422);
+        });
+    });
+  });
+
+  describe('/users/:id (PATCH)', () => {
+    it('returns 404 response when no user is found', async () => {
+      await request(app.getHttpServer())
+        .patch('/users/abcd')
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+    it('returns the updated user data when populated', async () => {
+      const user = await usersService.create({ name: faker.person.fullName() });
+      const newName = faker.person.firstName();
+      await request(app.getHttpServer())
+        .patch('/users/' + user.id)
+        .send({
+          name: newName,
+        })
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body).toMatchObject({
+            name: newName,
+            id: user.id,
+          });
+        });
+    });
+  });
+
+  describe('/users/:id/follows (POST)', () => {
+    it('returns 404 response when no user is found', async () => {
+      await request(app.getHttpServer())
+        .post('/users/abcd/follows')
+        .send({ a: 'b' })
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+    it('returns the new follow data when populated', async () => {
+      const show = await showsService.create({
+        name: faker.company.name(),
+        imdb_id: faker.string.uuid(),
+      });
+      const user = await usersService.create({ name: faker.person.fullName() });
+      await request(app.getHttpServer())
+        .post(`/users/${user.id}/follows`)
+        .send({
+          show_id: show.id,
+        })
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body).toMatchObject({
+            show_id: show.id,
+            user_id: user.id,
+          });
         });
     });
   });
