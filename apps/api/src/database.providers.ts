@@ -12,7 +12,7 @@ export const databaseProviders = [
               `./tmp/local-test-${process.pid}.sql`
             : 'local-dev.sql',
         synchronize: true,
-        logging: true,
+        logging: process.env.DB_LOGS === 'yes',
         entities: [__dirname + '/**/entities/*{.ts,.js}'],
         subscribers: [],
         migrations: [],
