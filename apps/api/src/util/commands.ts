@@ -4,11 +4,10 @@ import opentelemetry from '@opentelemetry/api';
 import { faker } from '@faker-js/faker';
 import { Command } from 'commander';
 import signales from 'signales';
-import { initializeTracing } from '../tracing';
+import { initializeTracing, shutdown } from '../tracing';
 
-console.log('service name', process.env.OTEL_SERVICE_NAME);
 config({ path: path.resolve(__dirname, '../../../../.env') });
-initializeTracing();
+initializeTracing('percipio-cli');
 const tracer = opentelemetry.trace.getTracer('cli');
 const program = new Command();
 
@@ -70,17 +69,25 @@ async function followAction() {
   }
 }
 
+async function tracedOperation(operationName: string) {
+  await tracer.startActiveSpan(operationName, async (span) => {
+    try {
+      await followAction();
+    } catch (e) {
+      span.recordException(e);
+    } finally {
+      span.end();
+      await shutdown();
+    }
+  });
+}
+
 const createFollowCommand = new Command()
   .name('create-follow')
   .description('Creates a follow on a random show for a random user')
   .action(async (ctx) => {
-    await tracer.startActiveSpan('create-follow', async (span) => {
-      try {
-        await followAction();
-      } finally {
-        span.end();
-      }
-    });
+    let operationName = 'create-follow';
+    await tracedOperation(operationName);
   });
 
 async function showAction() {
@@ -115,6 +122,7 @@ const createShowCommand = new Command()
         await showAction();
       } finally {
         span.end();
+        shutdown();
       }
     });
   });
@@ -151,6 +159,7 @@ const createUserCommand = new Command()
         await userAction();
       } finally {
         span.end();
+        shutdown();
       }
     });
   });
