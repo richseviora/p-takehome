@@ -56,28 +56,6 @@ describe('UsersController (e2e)', () => {
     });
   });
 
-  describe('/users/:id (GET)', () => {
-    it('returns 404 response when no user is found', async () => {
-      await request(app.getHttpServer())
-        .get('/users/abcd')
-        .expect((response) => {
-          expect(response.status).toBe(404);
-        });
-    });
-    it('returns the user data when populated', async () => {
-      const user = await usersService.create({ name: faker.person.fullName() });
-      await request(app.getHttpServer())
-        .get('/users/' + user.id)
-        .expect((response) => {
-          expect(response.status).toBe(200);
-          expect(response.body).toMatchObject({
-            name: user.name,
-            id: user.id,
-          });
-        });
-    });
-  });
-
   describe('/users/ (POST)', () => {
     it('returns the created user', async () => {
       const userName = faker.person.fullName();
@@ -101,6 +79,48 @@ describe('UsersController (e2e)', () => {
         .expect((response) => {
           expect(response.status).toBe(422);
         });
+    });
+  });
+
+  describe('/users/:id (GET)', () => {
+    it('returns 404 response when no user is found', async () => {
+      await request(app.getHttpServer())
+        .get('/users/abcd')
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+    it('returns the user data when populated', async () => {
+      const user = await usersService.create({ name: faker.person.fullName() });
+      await request(app.getHttpServer())
+        .get('/users/' + user.id)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body).toMatchObject({
+            name: user.name,
+            id: user.id,
+          });
+        });
+    });
+  });
+
+  describe('/users/:id (DELETE)', () => {
+    it('returns 404 response when no user is found', async () => {
+      await request(app.getHttpServer())
+        .delete('/users/abcd')
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+    it('returns the user data when populated', async () => {
+      const user = await usersService.create({ name: faker.person.fullName() });
+      await request(app.getHttpServer())
+        .delete('/users/' + user.id)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+        });
+      const deletedUser = await usersService.findOne(user.id);
+      expect(deletedUser).toBeFalsy();
     });
   });
 
