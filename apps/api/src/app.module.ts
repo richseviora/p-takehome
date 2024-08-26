@@ -3,7 +3,6 @@ import * as path from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import './tracing';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { DatabaseModule } from './database.module';
