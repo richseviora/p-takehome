@@ -23,3 +23,12 @@ export function initializeTracing(serviceName?: string): void {
 export function shutdown(): Promise<void> {
   return sdk.shutdown();
 }
+
+export function formatHoneycombTraceLink(
+  team: string,
+  environment: string,
+): (traceId: string) => string {
+  return (traceId: string) => {
+    return `https://ui.honeycomb.io/${team}/environments/${environment}/trace?trace_id=${traceId}`;
+  };
+}

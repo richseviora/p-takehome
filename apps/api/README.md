@@ -12,11 +12,15 @@ $ pnpm install
 
 Create a `.env` file in the repository root with the following values:
 
-```
+```bash
 OTEL_SERVICE_NAME=percipio-test
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
 OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=API_KEY_HERE
+# optional
+HC_TEAM=NAME_OF_HONEYCOMB_TEAM_HERE
+# optional 
+HC_ENV=NAME_OF_HONEYCOMB_ENV_HERE 
 ```
 
 ## Running the app
