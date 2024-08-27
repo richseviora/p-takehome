@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import { Repository } from 'typeorm';
@@ -31,11 +31,18 @@ export class ShowsService {
   }
 
   async update(id: string, updateShowDto: UpdateShowDto) {
-    await this.showRepository.update(id, updateShowDto);
+    const result = await this.showRepository.update(id, updateShowDto);
+    if (result.affected == null || result.affected === 0) {
+      throw new NotFoundException('Show not found');
+    }
     return this.showRepository.findOneBy({ id });
   }
 
   async remove(id: string) {
-    return this.showRepository.delete({ id });
+    const show = await this.showRepository.findOneBy({ id });
+    if (show == null) {
+      throw new NotFoundException('Show not found');
+    }
+    await this.showRepository.delete({ id });
   }
 }

@@ -6,18 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ShowsService } from './shows.service';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('shows')
 export class ShowsController {
   constructor(private readonly showsService: ShowsService) {}
 
   @Post()
-  create(@Body() createShowDto: CreateShowDto) {
-    return this.showsService.create(createShowDto);
+  async create(@Body() createShowDto: CreateShowDto) {
+    try {
+      return await this.showsService.create(createShowDto);
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        throw new HttpException(
+          'Invalid record error',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+      throw e;
+    }
   }
 
   @Get()
@@ -26,8 +39,12 @@ export class ShowsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.showsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.showsService.findOne(id);
+    if (result == null) {
+      throw new HttpException('Show not found', HttpStatus.NOT_FOUND);
+    }
+    return result;
   }
 
   @Patch(':id')
