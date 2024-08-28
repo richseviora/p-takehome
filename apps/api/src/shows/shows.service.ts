@@ -1,24 +1,28 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
-import { Repository } from 'typeorm';
 import { Show } from '../entities/show';
-import { SseService } from '../sse/sse.service';
 
 @Injectable()
 export class ShowsService {
   constructor(
     @Inject('SHOW_REPOSITORY') private showRepository: Repository<Show>,
-    private sseService: SseService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createShowDto: CreateShowDto) {
     const result = await this.showRepository.save(createShowDto);
-    this.sseService.emitEvent({
+    console.log('event emitter identity', this.eventEmitter);
+    console.log(this.eventEmitter.listeners('show.created'));
+    const emitResult = this.eventEmitter.emit('show.created', {
       data: result,
       action: 'add',
       type: 'show',
     });
+    console.log(this.eventEmitter.listeners('show.created'));
+    console.log('emit result', emitResult);
     return result;
   }
 

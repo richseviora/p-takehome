@@ -6,7 +6,7 @@ import { DatabaseModule } from '../database.module';
 import { SseModule } from '../sse/sse.module';
 
 @Module({
-  imports: [DatabaseModule, SseModule],
+  imports: [DatabaseModule],
   controllers: [UsersController],
   providers: [...usersProviders, UsersService],
 })
