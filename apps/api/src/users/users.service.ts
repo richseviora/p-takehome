@@ -1,5 +1,4 @@
 import {
-  HttpException,
   Inject,
   Injectable,
   NotFoundException,

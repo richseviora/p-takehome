@@ -20,7 +20,7 @@ function emitHoneycombTrace(span: Span): void {
   const hcteam = process.env.HC_TEAM;
   const hcenv = process.env.HC_ENV;
   if (hcteam == null || hcenv == null) {
-    signales.note('No Honeycomb configuration info available to generate link');
+    signales.note('No Honeycomb configuration info available to generate link, did you set the HC_TEAM and HC_ENV variables?');
     return;
   }
   const formatter = formatHoneycombTraceLink(hcteam, hcenv);
@@ -30,7 +30,7 @@ function emitHoneycombTrace(span: Span): void {
   );
 }
 
-async function tracedOperation(
+async function executeTracedOperation(
   operationName: string,
   action: () => Promise<void>,
 ) {
@@ -50,22 +50,22 @@ async function tracedOperation(
 const createFollowCommand = new Command()
   .name('create-follow')
   .description('Creates a follow on a random show for a random user')
-  .action(async (ctx) => {
-    await tracedOperation('create-follow', followAction);
+  .action(async () => {
+    await executeTracedOperation('create-follow', followAction);
   });
 
 const createShowCommand = new Command()
   .name('create-show')
   .description('Creates a show')
-  .action(async (ctx) => {
-    await tracedOperation('create-show', showAction);
+  .action(async () => {
+    await executeTracedOperation('create-show', showAction);
   });
 
 const createUserCommand = new Command()
   .name('create-user')
   .description('Creates a user')
-  .action(async (ctx) => {
-    await tracedOperation('create-user', userAction);
+  .action(async () => {
+    await executeTracedOperation('create-user', userAction);
   });
 
 program.addCommand(createUserCommand);
