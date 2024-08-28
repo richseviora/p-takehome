@@ -4,8 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { UsersService } from '../src/users/users.service';
-import { SseService } from '../src/sse/sse.service';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../src/entities/user';
 import { ShowsService } from '../src/shows/shows.service';
 
@@ -14,7 +13,6 @@ describe('UsersController (e2e)', () => {
   let usersService: UsersService;
   let userDb: Repository<User>;
   let showsService: ShowsService;
-  let sseService: SseService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,7 +23,6 @@ describe('UsersController (e2e)', () => {
     userDb = moduleFixture.get('USER_REPOSITORY');
     usersService = moduleFixture.get(UsersService);
     showsService = moduleFixture.get(ShowsService);
-    sseService = moduleFixture.get(SseService);
 
     await app.init();
     await userDb.delete({});
@@ -179,7 +176,7 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns 404 when the show ID is not valid', async () => {
-      const show = await showsService.create({
+      await showsService.create({
         name: faker.company.name(),
         imdb_id: faker.string.uuid(),
       });

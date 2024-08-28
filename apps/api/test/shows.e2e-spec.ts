@@ -4,7 +4,6 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ShowsService } from '../src/shows/shows.service';
-import { SseService } from '../src/sse/sse.service';
 import { Repository } from 'typeorm';
 import { Show } from '../src/entities/show';
 
@@ -12,7 +11,6 @@ describe('ShowsController (e2e)', () => {
   let app: INestApplication;
   let showDb: Repository<Show>;
   let showsService: ShowsService;
-  let sseService: SseService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,7 +20,6 @@ describe('ShowsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     showDb = moduleFixture.get('SHOW_REPOSITORY');
     showsService = moduleFixture.get(ShowsService);
-    sseService = moduleFixture.get(SseService);
 
     await app.init();
     await showDb.delete({});
