@@ -20,7 +20,9 @@ function emitHoneycombTrace(span: Span): void {
   const hcteam = process.env.HC_TEAM;
   const hcenv = process.env.HC_ENV;
   if (hcteam == null || hcenv == null) {
-    signales.note('No Honeycomb configuration info available to generate link, did you set the HC_TEAM and HC_ENV variables?');
+    signales.note(
+      'No Honeycomb configuration info available to generate link, did you set the HC_TEAM and HC_ENV variables?',
+    );
     return;
   }
   const formatter = formatHoneycombTraceLink(hcteam, hcenv);
