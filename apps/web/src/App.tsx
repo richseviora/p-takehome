@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { Menu as MenuIcon, Inbox } from "@mui/icons-material";
+import { Menu as MenuIcon, Person as PersonIcon, Tv as TvIcon } from "@mui/icons-material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserList } from "./UserList.tsx";
 
@@ -76,7 +76,7 @@ function FullDrawer(props: {
     <Drawer open={open} onClose={onClose} variant="permanent">
       <DrawerHeader></DrawerHeader>
       <List>
-        {["Inbox", "Starred", "Send Email", "Drafts"].map((text) => (
+        {["Users", "Shows"].map((text) => (
           <ListItem key={text} disablePadding sx={{ display: "block" }}>
             <ListItemButton
               sx={{
@@ -93,7 +93,7 @@ function FullDrawer(props: {
                   color: "white",
                 }}
               >
-                <Inbox />
+                {text === 'Users' ? <PersonIcon /> : <TvIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
@@ -139,7 +139,7 @@ function Page(props: {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Meow
+            Users and Shows
           </Typography>
         </Toolbar>
       </AppBar>

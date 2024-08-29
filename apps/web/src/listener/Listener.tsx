@@ -1,18 +1,20 @@
 import * as debug from "debug";
+import type { ReactNode } from "react";
+
 import { useQueryClient } from "@tanstack/react-query";
-import { NotifierContext, SseType } from "./context.tsx";
+import { NotifierContext, SseMessages } from "./context.tsx";
 import { Fragment, useEffect, useReducer } from "react";
 
 const logger = debug.debug("app:listener");
 
 export type ReducerAction =
-  | { id: string; message: string; type: "add"; data: SseType }
+  | { id: string; message: string; type: "add"; data: SseMessages }
   | { id: string; type: "remove" };
 
 function messageReducer(
-  state: Record<string, SseType>,
+  state: Record<string, SseMessages>,
   action: ReducerAction,
-): Record<string, SseType> {
+): Record<string, SseMessages> {
   logger("handling reducer action", action);
   switch (action.type) {
     case "add":
@@ -28,29 +30,39 @@ function messageReducer(
 }
 
 export interface IListenerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Listener(props: IListenerProps) {
   const [messages, dispatch] = useReducer(messageReducer, {});
   const queryClient = useQueryClient();
   useEffect(() => {
-    const sse = new EventSource("http://localhost:3000/sse");
+    const url = "http://localhost:3000/sse";
+    logger("opening SSE connection to", url);
+    const sse = new EventSource(url);
 
-    function getRealtimeData(data: SseType) {
-      logger("receiving data", data);
+    function getRealtimeData(message: SseMessages) {
+      logger("receiving data", message);
       dispatch({
-        id: data.data.id,
-        message: "Added:" + data.data.name,
-        data,
+        id: message.data.id,
+        message: "Added:" + message.type,
+        data: message,
         type: "add",
       });
-      if (data.type === "user") {
+      if (message.type === "user") {
         logger("invalidating query key", "users");
         queryClient.invalidateQueries({ queryKey: ["users"] });
       }
+      if (message.type === "follow") {
+        const id = message.data.user.id;
+        logger("invalidating query key", ["users", id]);
+        queryClient.invalidateQueries({ queryKey: ["users", id] });
+      }
     }
 
+    sse.onopen = () => {
+      logger("SSE connection opened");
+    };
     sse.onmessage = (e) => getRealtimeData(JSON.parse(e.data));
     sse.onerror = (e) => {
       logger("Encountered Error, terminating SSE", e);
