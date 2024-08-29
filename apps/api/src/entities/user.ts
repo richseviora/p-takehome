@@ -19,6 +19,12 @@ export class User {
   @OneToMany(() => Follow, (follow) => follow.user)
   follows: Promise<Follow[]>;
 
+  @Column('varchar', { length: 255, nullable: true })
+  thumbnail_url: string;
+
+  @Column('varchar', { length: 255, nullable: true })
+  gender: string;
+
   @CreateDateColumn({
     type: 'text',
     default: () => `strftime('%Y-%m-%dT%H:%M:%S', julianday())`,
