@@ -3,8 +3,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 export interface ISseService {
-  emitEvent(data: EventData): void;
-
   getObservable(): Observable<string>;
 }
 
@@ -24,17 +22,27 @@ export class SseService implements ISseService {
    * not appear to work in practice.
    * @param data
    */
+  @OnEvent(['user.created'], {
+    suppressErrors: false,
+  })
+  emitUserEvent(data: EventData) {
+    this.logger.debug('emitUserEvent', data);
+    this.eventSubject.next(JSON.stringify(data));
+  }
+
   @OnEvent(['show.created'], {
     suppressErrors: false,
   })
-  @OnEvent(['order.created'], {
-    suppressErrors: false,
-  })
+  emitShowEvent(data: EventData) {
+    this.logger.debug('emitShowEvent', data);
+    this.eventSubject.next(JSON.stringify(data));
+  }
+
   @OnEvent(['follow.created'], {
     suppressErrors: false,
   })
-  emitEvent(data: EventData) {
-    this.logger.debug('emitEvent', data);
+  emitFollowEvent(data: EventData) {
+    this.logger.debug('emitFollowEvent', data);
     this.eventSubject.next(JSON.stringify(data));
   }
 

@@ -1,8 +1,9 @@
 import * as debug from "debug";
+import { useQueryClient } from "@tanstack/react-query";
 import { NotifierContext, SseType } from "./context.tsx";
 import { Fragment, useEffect, useReducer } from "react";
 
-const logger = debug.debug('app:listener');
+const logger = debug.debug("app:listener");
 
 export type ReducerAction =
   | { id: string; message: string; type: "add"; data: SseType }
@@ -32,6 +33,7 @@ export interface IListenerProps {
 
 export function Listener(props: IListenerProps) {
   const [messages, dispatch] = useReducer(messageReducer, {});
+  const queryClient = useQueryClient();
   useEffect(() => {
     const sse = new EventSource("http://localhost:3000/sse");
 
@@ -43,6 +45,10 @@ export function Listener(props: IListenerProps) {
         data,
         type: "add",
       });
+      if (data.type === "user") {
+        logger("invalidating query key", "users");
+        queryClient.invalidateQueries("users");
+      }
     }
 
     sse.onmessage = (e) => getRealtimeData(JSON.parse(e.data));
