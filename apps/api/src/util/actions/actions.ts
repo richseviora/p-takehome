@@ -13,6 +13,37 @@ const createRecord = (path: string, body: any): Promise<Response> => {
     body: body,
   });
 };
+
+interface UserResult {
+  name: string;
+  gender: string;
+  thumbnail_url: string;
+}
+
+const getRandomUser = async (): Promise<UserResult> => {
+  signales.info('calling randomuser.me/api to get random user data with photo');
+  const result = await fetch(
+    'https://randomuser.me/api/?inc=gender,name,picture',
+    {
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
+
+  if (!result.ok) {
+    signales.fatal('received error calling user', result);
+    throw new Error("Unhandled User Creation")
+  }
+  const body = await result.json();
+  const user = body.results[0];
+  const userReturn = {
+    name: `${user.name.first} ${user.name.last}`,
+    gender: user.gender,
+    thumbnail_url: user.picture.large,
+  };
+  signales.info('received result', userReturn);
+  return userReturn;
+};
+
 const getRandomRecordFromResponse = async (
   response: Response,
 ): Promise<any> => {
@@ -84,12 +115,14 @@ export async function showAction() {
 
 export async function userAction() {
   signales.start('starting request');
-  const userName = faker.person.fullName();
-  signales.info('sending request to create user with name', userName);
-  const body = JSON.stringify({
-    name: userName,
-  });
   try {
+    const userData = await getRandomUser();
+    const body = JSON.stringify({
+      name: userData.name,
+      thumbnail_url: userData.thumbnail_url,
+      gender: userData.gender,
+    });
+    signales.info('sending request to create user', body);
     const createRequest = await createRecord('users', body);
     if (!createRequest.ok) {
       signales.error('User creation failed', createRequest.status);
