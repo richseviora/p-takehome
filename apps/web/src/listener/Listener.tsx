@@ -47,7 +47,7 @@ export function Listener(props: IListenerProps) {
       });
       if (data.type === "user") {
         logger("invalidating query key", "users");
-        queryClient.invalidateQueries("users");
+        queryClient.invalidateQueries({ queryKey: ["users"] });
       }
     }
 

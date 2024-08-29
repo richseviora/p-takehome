@@ -11,10 +11,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export class CreateUserDTO {
   name: string;
+  gender: string;
+  thumbnail_url: string;
 }
 
 export class UpdateUserDTO {
   name: string;
+  gender: string;
+  thumbnail_url: string;
 }
 
 export class CreateFollowDTO {
