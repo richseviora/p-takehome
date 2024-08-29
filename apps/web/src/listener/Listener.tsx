@@ -1,18 +1,22 @@
-import { NotifierContext, SseType } from './context.tsx';
-import { Fragment, useEffect, useReducer } from 'react';
+import * as debug from "debug";
+import { NotifierContext, SseType } from "./context.tsx";
+import { Fragment, useEffect, useReducer } from "react";
+
+const logger = debug.debug('app:listener');
 
 export type ReducerAction =
-  | { id: string; message: string; type: 'add'; data: SseType }
-  | { id: string; type: 'remove' };
+  | { id: string; message: string; type: "add"; data: SseType }
+  | { id: string; type: "remove" };
 
 function messageReducer(
   state: Record<string, SseType>,
   action: ReducerAction,
 ): Record<string, SseType> {
+  logger("handling reducer action", action);
   switch (action.type) {
-    case 'add':
+    case "add":
       return { ...state, [action.id]: action.data };
-    case 'remove':
+    case "remove":
       // eslint-disable-next-line no-case-declarations
       const newState = { ...state };
       delete newState[action.id];
@@ -29,21 +33,21 @@ export interface IListenerProps {
 export function Listener(props: IListenerProps) {
   const [messages, dispatch] = useReducer(messageReducer, {});
   useEffect(() => {
-    const sse = new EventSource('http://localhost:3000/sse');
+    const sse = new EventSource("http://localhost:3000/sse");
 
     function getRealtimeData(data: SseType) {
-      console.log(data);
+      logger("receiving data", data);
       dispatch({
         id: data.data.id,
-        message: 'Added:' + data.data.name,
+        message: "Added:" + data.data.name,
         data,
-        type: 'add',
+        type: "add",
       });
     }
 
     sse.onmessage = (e) => getRealtimeData(JSON.parse(e.data));
     sse.onerror = (e) => {
-      console.error('Encountered Error, terminating SSE', e);
+      logger("Encountered Error, terminating SSE", e);
       sse.close();
     };
     return () => {
@@ -52,7 +56,7 @@ export function Listener(props: IListenerProps) {
   });
 
   const onClose = (id: string) => {
-    dispatch({ id: id, type: 'remove' });
+    dispatch({ id: id, type: "remove" });
   };
 
   return (

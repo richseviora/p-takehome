@@ -4,6 +4,11 @@ import App from './App.tsx';
 import './index.css';
 import { CssBaseline } from '@mui/material';
 
+// Enables all debugging display in console by default. For dev inclusion only.
+// These entries all show up on verbose logging, so make sure you enable that
+// in console.
+localStorage.debug = '*'
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <CssBaseline />

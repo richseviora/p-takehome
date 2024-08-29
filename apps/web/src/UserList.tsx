@@ -1,3 +1,4 @@
+import * as debug from 'debug';
 import { useQuery } from '@tanstack/react-query';
 import { Error, Watch } from '@mui/icons-material';
 import { Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, CardContent } from '@mui/material';
@@ -5,10 +6,12 @@ import { User } from './UserType.ts';
 import { useState } from 'react';
 import { UserDetail } from './UserDetail.tsx';
 
+const logger = debug.debug('app:user-list');
+
 const getUsers = async () => {
-  console.log('loading');
+  logger('loading');
   const response = await fetch('http://localhost:3000/users');
-  console.log('loaded', { response });
+  logger('loaded', { response });
   return response.json();
 };
 
