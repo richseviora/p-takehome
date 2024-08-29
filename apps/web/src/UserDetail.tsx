@@ -11,6 +11,10 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { User } from './UserType.ts';
 import { Error as ErrorIcon, Watch } from '@mui/icons-material';
+import * as debug from 'debug';
+
+const logger = debug.debug('app:user-detail');
+
 
 interface Follow {
   id: string;
@@ -31,12 +35,12 @@ interface UserDetail {
 }
 
 const getUserDetail = async (id: string) => {
-  console.log('loading');
+  logger('loading');
   const response = await fetch('http://localhost:3000/users/' + id);
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  console.log('loaded', { response });
+  logger('loaded', { response });
   return response.json();
 };
 
@@ -81,7 +85,7 @@ export function UserDetail(props: { open: boolean, onClose: () => void, user: Us
       </Typography>
       <List>
         {userDetail.__follows__.map(follow => (
-          <ListItem>
+          <ListItem key={follow.id}>
             <ListItemText>{follow.show.name}</ListItemText>
           </ListItem>
         ))}

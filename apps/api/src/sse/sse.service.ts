@@ -34,12 +34,12 @@ export class SseService implements ISseService {
     suppressErrors: false,
   })
   emitEvent(data: EventData) {
-    this.logger.debug('emitting event', data);
+    this.logger.debug('emitEvent', data);
     this.eventSubject.next(JSON.stringify(data));
   }
 
   getObservable(): Observable<string> {
-    console.log('getObservable');
+    this.logger.debug('getObservable');
     return this.eventSubject.asObservable().pipe(map((data) => data));
   }
 }
