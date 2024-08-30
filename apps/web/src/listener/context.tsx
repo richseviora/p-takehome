@@ -41,7 +41,7 @@ export interface Follow {
 
 export interface IListenerContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messages: Record<string, SseMessage<any>>;
+  messages: Record<string, SseMessages>;
   onClose: (id: string) => void;
 }
 

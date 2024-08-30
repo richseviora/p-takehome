@@ -1,6 +1,13 @@
 import * as debug from "debug";
 import { useQuery } from "@tanstack/react-query";
-import { Error, Watch, Female, Male, Transgender } from "@mui/icons-material";
+import {
+  Star,
+  Error,
+  Watch,
+  Female,
+  Male,
+  Transgender,
+} from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -9,8 +16,9 @@ import {
   CardActionArea,
 } from "@mui/material";
 import { User } from "../UserType.ts";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { UserDetail } from "./UserDetail.tsx";
+import { NotifierContext, SseMessages } from "../listener/context.tsx";
 
 const logger = debug.debug("app:user-list");
 
@@ -21,8 +29,12 @@ const getUsers = async () => {
   return response.json();
 };
 
-function UserEntry(props: { onClick: () => void; row: User }) {
-  const { gender } = props.row;
+function UserEntry(props: {
+  onClick: () => void;
+  user: User;
+  hasUpdate: boolean;
+}) {
+  const { gender } = props.user;
   const icon =
     gender.toLowerCase() === "male" ? (
       <Male />
@@ -35,15 +47,32 @@ function UserEntry(props: { onClick: () => void; row: User }) {
   return (
     <Card>
       <CardActionArea onClick={props.onClick}>
-        <CardMedia sx={{ height: 240 }} image={props.row.thumbnail_url} />
-        <CardContent>{icon} {props.row.name}</CardContent>
+        <CardMedia sx={{ height: 240 }} image={props.user.thumbnail_url} />
+        <CardContent>
+          {props.hasUpdate && <Star />}
+          {icon} {props.user.name}
+        </CardContent>
       </CardActionArea>
     </Card>
   );
 }
 
+const getUserUpdates = (
+  messages: Record<string, SseMessages>,
+): Record<string, number> => {
+  const userUpdates: Record<string, number> = {};
+  Object.entries(messages).forEach(([, value]) => {
+    if (value.type === "follow") {
+      userUpdates[value.data.user.id] = 1;
+    }
+  });
+  return userUpdates;
+};
+
 export function UserList() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { messages } = useContext(NotifierContext);
+  const usersWithNewFollows = getUserUpdates(messages);
   const query = useQuery<Response, unknown, User[]>({
     queryKey: ["users"],
     queryFn: getUsers,
@@ -67,7 +96,11 @@ export function UserList() {
       <Grid container spacing={4}>
         {users.map((user) => (
           <Grid item xs={12} sm={6} key={user.id} md={4}>
-            <UserEntry onClick={() => setSelectedUser(user)} row={user} />
+            <UserEntry
+              onClick={() => setSelectedUser(user)}
+              user={user}
+              hasUpdate={usersWithNewFollows[user.id] != null}
+            />
           </Grid>
         ))}
       </Grid>
