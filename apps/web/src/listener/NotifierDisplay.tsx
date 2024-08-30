@@ -1,5 +1,5 @@
 import { Fragment, useContext } from "react";
-import { Snackbar } from "@mui/material";
+import { Snackbar, Typography } from "@mui/material";
 import { Person, Tv, Watch } from "@mui/icons-material";
 import { NotifierContext, SseMessages } from "./context.tsx";
 
@@ -40,6 +40,7 @@ export function Notification(props: {
   const action = props.message.action;
   const backgroundColor = typeToColorMap[action];
   const icon = typeToIconMap[type];
+  const actionVerb = action + "ed";
 
   return (
     <Snackbar
@@ -47,10 +48,10 @@ export function Notification(props: {
       open={true}
       ContentProps={{ sx: { backgroundColor: backgroundColor } }}
       message={
-        <>
+        <Typography>
           {icon}
-          {type} has been {action}
-        </>
+          {type} has been {actionVerb}
+        </Typography>
       }
     />
   );

@@ -1,6 +1,6 @@
 import * as debug from "debug";
 import { useQuery } from "@tanstack/react-query";
-import { Error, Watch } from "@mui/icons-material";
+import { Error, Watch, Female, Male, Transgender } from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -22,11 +22,21 @@ const getUsers = async () => {
 };
 
 function UserEntry(props: { onClick: () => void; row: User }) {
+  const { gender } = props.row;
+  const icon =
+    gender.toLowerCase() === "male" ? (
+      <Male />
+    ) : gender.toLowerCase() === "female" ? (
+      <Female />
+    ) : (
+      <Transgender />
+    );
+
   return (
     <Card>
       <CardActionArea onClick={props.onClick}>
         <CardMedia sx={{ height: 240 }} image={props.row.thumbnail_url} />
-        <CardContent>{props.row.name}</CardContent>
+        <CardContent>{icon} {props.row.name}</CardContent>
       </CardActionArea>
     </Card>
   );
