@@ -12,10 +12,9 @@ export interface SseMessage<T extends keyof TypeMap> {
   data: TypeMap[T];
 }
 
-export type SseMessages =
-  | SseMessage<"user">
-  | SseMessage<"show">
-  | SseMessage<"follow">;
+type CreateUnion<T extends keyof TypeMap> = T extends keyof TypeMap ? SseMessage<T> : never;
+
+export type SseMessages = CreateUnion<keyof TypeMap>;
 
 export interface Show {
   id: string;

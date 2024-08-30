@@ -8,7 +8,7 @@ import {
   CardMedia,
   CardActionArea,
 } from "@mui/material";
-import { User } from "./UserType.ts";
+import { User } from "../UserType.ts";
 import { useState } from "react";
 import { UserDetail } from "./UserDetail.tsx";
 

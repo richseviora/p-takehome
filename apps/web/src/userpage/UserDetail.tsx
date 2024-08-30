@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { User } from "./UserType.ts";
+import { User } from "../UserType.ts";
 import { Error as ErrorIcon, Watch } from "@mui/icons-material";
 import * as debug from "debug";
 

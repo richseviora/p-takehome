@@ -1,7 +1,7 @@
 import React from "react";
 import {
   AppBar,
-  Box,
+  Button,
   Container,
   createTheme,
   Drawer,
@@ -15,13 +15,18 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import { Menu as MenuIcon, Person as PersonIcon, Tv as TvIcon } from "@mui/icons-material";
+import {
+  Person as PersonIcon,
+  Tv as TvIcon,
+  ChevronRight,
+  ChevronLeft,
+} from "@mui/icons-material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { UserList } from "./UserList.tsx";
 
 import { Listener } from "./listener/Listener.tsx";
 import { NotifierDisplay } from "./listener/NotifierDisplay.tsx";
+import { ShowDialog } from "./ShowDialog.tsx";
+import { UserPage } from "./userpage/UserPage.tsx";
 
 // Colour Notes
 /**
@@ -39,11 +44,6 @@ const customTheme = createTheme({
     },
   },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        colorDefault: "#F6F6C6",
-      },
-    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
@@ -70,14 +70,26 @@ function FullDrawer(props: {
   open: boolean;
   onClose: () => void;
   onOpen: () => void;
+  onShowClick: () => void;
 }) {
-  const { open, onClose } = props;
+  const { open, onClose, onOpen, onShowClick } = props;
   return (
     <Drawer open={open} onClose={onClose} variant="permanent">
-      <DrawerHeader></DrawerHeader>
+      <DrawerHeader>
+        {open ? (
+          <ChevronLeft onClick={onClose} />
+        ) : (
+          <ChevronRight onClick={onOpen} />
+        )}
+      </DrawerHeader>
       <List>
         {["Users", "Shows"].map((text) => (
-          <ListItem key={text} disablePadding sx={{ display: "block" }}>
+          <ListItem
+            key={text}
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={onShowClick}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -93,7 +105,7 @@ function FullDrawer(props: {
                   color: "white",
                 }}
               >
-                {text === 'Users' ? <PersonIcon /> : <TvIcon />}
+                {text === "Users" ? <PersonIcon /> : <TvIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
@@ -107,12 +119,18 @@ function FullDrawer(props: {
   );
 }
 
-function UserPage() {
+function FullAppBar() {
   return (
-    <Box component="div">
-      <Typography variant="h3">Users</Typography>
-      <UserList />
-    </Box>
+    <AppBar position="fixed" component="div" sx={{ backgroundColor: "white" }}>
+      <Toolbar sx={{ paddingLeft: "100px !important" }}>
+        <Button color="primary">Add User</Button>
+        <Button color="warning">Reticulate Splines</Button>
+        <Button color="info">Lecture Errant Subsystems</Button>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Users
+        </Typography>
+      </Toolbar>
+    </AppBar>
   );
 }
 
@@ -121,32 +139,19 @@ function Page(props: {
   onClick: () => void;
   onClose: () => void;
 }) {
+  const [showOpenDialog, setShowOpenDialog] = React.useState(false);
+  const onShowClick = () => setShowOpenDialog(true);
+  const onShowDismiss = () => setShowOpenDialog(false);
   return (
-    <Container>
+    <Container sx={{ paddingLeft: "100px !important" }}>
+      {showOpenDialog && <ShowDialog onClose={onShowDismiss} />}
       <NotifierDisplay />
-      <AppBar position="fixed" component="div" color="default">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={props.onClick}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(props.open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Users and Shows
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <FullAppBar />
       <FullDrawer
         open={props.open}
         onClose={props.onClose}
         onOpen={props.onClick}
+        onShowClick={onShowClick}
       />
       <UserPage />
     </Container>
@@ -156,7 +161,6 @@ function Page(props: {
 function App() {
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
-    console.log("I'm clicked");
     setOpen(true);
   };
 
