@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import './tracing/tracing.ts';
 import { CssBaseline } from "@mui/material";
 
 // Enables all debugging display in console by default. For dev inclusion only.
