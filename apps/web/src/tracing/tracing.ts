@@ -6,6 +6,8 @@ import {
   SimpleSpanProcessor,
   WebTracerProvider,
 } from "@opentelemetry/sdk-trace-web";
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
 
 const logger = debug.debug("app:tracing");
 
@@ -25,6 +27,10 @@ if (import.meta.env.DEV) {
   const consoleProcessor = new SimpleSpanProcessor(new ConsoleSpanExporter());
   provider.addSpanProcessor(consoleProcessor);
 }
+
+registerInstrumentations({
+  instrumentations: [new FetchInstrumentation()]
+})
 
 provider.register();
 logger("tracing registered");
