@@ -1,0 +1,27 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "*"
+          allowed_headers:
+            - "*"
+processors:
+  batch:
+exporters:
+  otlp:
+    endpoint: "api.honeycomb.io:443" # US instance
+    headers:
+      "x-honeycomb-team": ${HC_API_KEY}
+  logging:
+    loglevel: debug
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp, logging] # only add file if added above

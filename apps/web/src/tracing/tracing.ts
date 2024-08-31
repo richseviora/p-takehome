@@ -6,18 +6,14 @@ import {
   SimpleSpanProcessor,
   WebTracerProvider,
 } from "@opentelemetry/sdk-trace-web";
-import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
+import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { FetchInstrumentation } from "@opentelemetry/instrumentation-fetch";
 
 const logger = debug.debug("app:tracing");
 
-const [header, value] = import.meta.env.OTEL_EXPORTER_OTLP_HEADERS.split("=");
 const provider = new WebTracerProvider();
 const exporter = new OTLPTraceExporter({
-  url: import.meta.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-  headers: {
-    [header]: value,
-  },
+  url: "http://localhost:4318/v1/traces",
 });
 const processor = new BatchSpanProcessor(exporter);
 provider.addSpanProcessor(processor);
@@ -29,8 +25,8 @@ if (import.meta.env.DEV) {
 }
 
 registerInstrumentations({
-  instrumentations: [new FetchInstrumentation()]
-})
+  instrumentations: [new FetchInstrumentation()],
+});
 
 provider.register();
 logger("tracing registered");
