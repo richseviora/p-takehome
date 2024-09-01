@@ -7,7 +7,8 @@ receivers:
         endpoint: 0.0.0.0:4318
         cors:
           allowed_origins:
-            - "*"
+            # Can't use wildcard with credentials include mode requests for CORS.
+            - "http://localhost*"
           allowed_headers:
             - "*"
 processors:
