@@ -2,6 +2,7 @@ import * as opentelemetry from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { trace } from '@opentelemetry/api';
 
 let sdk: NodeSDK;
 
@@ -31,4 +32,11 @@ export function formatHoneycombTraceLink(
   return (traceId: string) => {
     return `https://ui.honeycomb.io/${team}/environments/${environment}/trace?trace_id=${traceId}`;
   };
+}
+
+/**
+ * Extracts the current trace ID from the current span context.
+ */
+export function getCurrentTraceId(): string | undefined {
+  return trace.getActiveSpan()?.spanContext().traceId;
 }
