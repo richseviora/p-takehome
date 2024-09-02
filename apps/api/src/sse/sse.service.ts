@@ -11,7 +11,7 @@ export interface EventData {
   data: unknown;
   type: 'show' | 'follow' | 'user';
   action: 'add';
-  __traceparent?: string;
+  __traceparent?: unknown;
 }
 
 @Injectable()

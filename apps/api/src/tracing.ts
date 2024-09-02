@@ -2,7 +2,7 @@ import * as opentelemetry from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { trace } from '@opentelemetry/api';
+import { Span, propagation, context, trace } from '@opentelemetry/api';
 
 let sdk: NodeSDK;
 
@@ -34,9 +34,16 @@ export function formatHoneycombTraceLink(
   };
 }
 
+export interface W3TraceContext {
+  traceparent: string;
+  tracestate: string;
+}
+
 /**
- * Extracts the current trace ID from the current span context.
+ * Extracts the current trace context from the current context.
  */
-export function getCurrentTraceId(): string | undefined {
-  return trace.getActiveSpan()?.spanContext().traceId;
+export function getCurrentTraceId(): W3TraceContext {
+  const data = {};
+  propagation.inject(context.active(), data);
+  return data as any;
 }

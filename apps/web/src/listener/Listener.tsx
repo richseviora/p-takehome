@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { NotifierContext, SseMessages } from "./context.tsx";
 import { Fragment, useEffect, useReducer } from "react";
+import { extractContextAndGetSpan } from '../tracing/tracing.ts';
 
 const logger = debug.debug("app:listener");
 
@@ -41,8 +42,9 @@ export function Listener(props: IListenerProps) {
     logger("opening SSE connection to", url);
     const sse = new EventSource(url);
 
-    function getRealtimeData(message: SseMessages) {
+    async function getRealtimeData(message: SseMessages) {
       logger("receiving data", message);
+      const span = extractContextAndGetSpan(message.__traceparent, 'handle-sse');
       dispatch({
         id: message.data.id,
         message: "Added:" + message.type,
@@ -51,13 +53,14 @@ export function Listener(props: IListenerProps) {
       });
       if (message.type === "user") {
         logger("invalidating query key", "users");
-        queryClient.invalidateQueries({ queryKey: ["users"] });
+        await queryClient.invalidateQueries({ queryKey: ["users"] });
       }
       if (message.type === "follow") {
         const id = message.data.user.id;
         logger("invalidating query key", ["users", id]);
-        queryClient.invalidateQueries({ queryKey: ["users", id] });
+        await queryClient.invalidateQueries({ queryKey: ["users", id] });
       }
+      span.end();
     }
 
     sse.onopen = () => {
