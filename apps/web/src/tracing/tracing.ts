@@ -28,7 +28,7 @@ provider.addSpanProcessor(processor);
 
 if (import.meta.env.DEV) {
   logger("enabling verbose OTEL Logging");
-  diag.setLogger(new DiagConsoleLogger(), { logLevel: DiagLogLevel.VERBOSE });
+  diag.setLogger(new DiagConsoleLogger(), { logLevel: DiagLogLevel.INFO });
   logger("enabling console span exporter");
   const consoleProcessor = new SimpleSpanProcessor(new ConsoleSpanExporter());
   provider.addSpanProcessor(consoleProcessor);
@@ -40,5 +40,4 @@ registerInstrumentations({
   })],
 });
 
-provider.register();
 logger("tracing registered");
