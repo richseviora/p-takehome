@@ -2,23 +2,46 @@
 
 A monorepo template to use for our full-stack test.
 
-## RICH HAS THOUGHTS
 
-There's a number of things I would do differently in a production scale application, and/or would've done here:
+## Configuring
 
-- API
-    - This is my first time working with NestJS so I didn't take advantage of all the automated generators.
-    - The official documentation doesn't seem to have a great way to structure large applications.
-    - Establish contracts for all the message types outside of the app root, perhaps in a shared/contracts folder and/or use OpenAPI specifications for both contract documentation and message validation.
-    - Add the missing CRUD endpoints for the Follows.
-    - Use the EventEmitter API instead of the SSE service I built.
-    - More, useful tests!
-- UI
-    - Icons and more UI pizazzz.
-    - UI tests!
-    - Separate API layer from UI (though all that means I guess is moving the fetch function call out).
-    - Better configuration
-    - i18n
+I've added the open-telemetry collector as a docker-file as a separate project. Running `pnpm run start:dev` from root will also launch it. You need Docker installed to run it.
+
+Create a `.env` file in the repository root with the following values:
+
+```bash
+OTEL_SERVICE_NAME=percipio-test
+OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=API_KEY_HERE
+HC_API_KEY=API_KEY_HERE
+HC_TEAM=NAME_OF_HONEYCOMB_TEAM_HERE
+HC_ENV=NAME_OF_HONEYCOMB_ENV_HERE
+```
+
+## THINGS TO PAY ATTENTION TO
+
+A big focus of my work has been in systems reliability and observablity. So I thought I'd lean into that here:
+
+![./full-trace](full-trace.png)
+
+This is a screenshot of a trace emitted to Honeycomb. 
+It includes all the telemetry related to a single request from: 
+- [from the CLI I built](apps/api/src/util/commands.ts) to automate data creation (purple bars).
+- [the API itself](apps/api/src/tracing.ts) with auto-instrumentation of Express/Nest handlers and HTTP requests (orange/brown bars).
+- [the web client](apps/web/src/tracing/tracing.ts) with manual instrumentation of SSE events (blue bar).
+
+The CLI I built can be run from the `api` project with `pnpm run local:cli`. 
+
+![./sample-cli](sample-cli.png)
+
+- The CLI is built to be unobtrusive and easily scanned by a busy developer - so there's colors and a link to the generated trace on Honeycomb.
+
+Eddie told me not to spend too much time on the project, so I didn't spend a lot of time updating the web interface beyond the following:
+
+- Things look a bit nicer!
+- Creating a new user or follow through the CLI will automatically reload the users list and follows in place as appropriate.
+- Creating a new follow will add a star to the user (until the toast is dismissed).
 
 ## Expectations
 
