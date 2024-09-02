@@ -14,15 +14,11 @@ export class ShowsService {
 
   async create(createShowDto: CreateShowDto) {
     const result = await this.showRepository.save(createShowDto);
-    console.log('event emitter identity', this.eventEmitter);
-    console.log(this.eventEmitter.listeners('show.created'));
     const emitResult = this.eventEmitter.emit('show.created', {
       data: result,
       action: 'add',
       type: 'show',
     });
-    console.log(this.eventEmitter.listeners('show.created'));
-    console.log('emit result', emitResult);
     return result;
   }
 

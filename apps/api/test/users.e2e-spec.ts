@@ -14,7 +14,7 @@ describe('UsersController (e2e)', () => {
   let userDb: Repository<User>;
   let showsService: ShowsService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -25,6 +25,9 @@ describe('UsersController (e2e)', () => {
     showsService = moduleFixture.get(ShowsService);
 
     await app.init();
+  });
+
+  beforeEach(async () => {
     await userDb.delete({});
   });
 
@@ -38,7 +41,11 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the user data when populated', async () => {
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       await request(app.getHttpServer())
         .get('/users')
         .expect((response) => {
@@ -88,7 +95,11 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the user data when populated', async () => {
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       await request(app.getHttpServer())
         .get('/users/' + user.id)
         .expect((response) => {
@@ -110,7 +121,11 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the user data when populated', async () => {
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       await request(app.getHttpServer())
         .delete('/users/' + user.id)
         .expect((response) => {
@@ -130,7 +145,11 @@ describe('UsersController (e2e)', () => {
         });
     });
     it('returns the updated user data when populated', async () => {
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       const newName = faker.person.firstName();
       await request(app.getHttpServer())
         .patch('/users/' + user.id)
@@ -161,7 +180,11 @@ describe('UsersController (e2e)', () => {
         name: faker.company.name(),
         imdb_id: faker.string.uuid(),
       });
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       await request(app.getHttpServer())
         .post(`/users/${user.id}/follows`)
         .send({
@@ -180,7 +203,11 @@ describe('UsersController (e2e)', () => {
         name: faker.company.name(),
         imdb_id: faker.string.uuid(),
       });
-      const user = await usersService.create({ name: faker.person.fullName() });
+      const user = await usersService.create({
+        name: faker.person.fullName(),
+        gender: 'male',
+        thumbnail_url: 'abc',
+      });
       await request(app.getHttpServer())
         .post(`/users/${user.id}/follows`)
         .send({

@@ -58,7 +58,6 @@ export class UsersService {
       action: 'add',
       type: 'user',
     });
-    console.log('user created', result);
     return result;
   }
 
@@ -98,7 +97,6 @@ export class UsersService {
         type: 'follow',
         action: 'add',
       });
-      console.log('follow created', result);
       return result;
     } catch (e) {
       if (e instanceof QueryFailedError) {
