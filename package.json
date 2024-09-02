@@ -7,7 +7,7 @@
     "apps/*"
   ],
   "scripts": {
-    "start:dev": "nx run-many --output-style stream -t start:dev -p api web"
+    "start:dev": "nx run-many --output-style stream -t start:dev -p api web otel-collector"
   },
   "author": "Percipio Health, Inc.",
   "license": "UNLICENSED",

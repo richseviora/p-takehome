@@ -1,0 +1,14 @@
+{
+  "name": "otel-collector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "docker compose up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/richseviora/percipico-takehome.git"
+  },
+  "private": true
+}
